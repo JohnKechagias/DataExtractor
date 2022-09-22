@@ -4,13 +4,18 @@ from dfs import dfs
 
 
 
-def create_table_metadata(tables_folder: Path):
+def create_tables_metadata(table_files_folder: Path):
+    """ Create metadata for the specified table files.
+
+    Args:
+        table_files_folder: Path to the table files.
+    """
     tables = []
     tables_headings = []
     tables_metadata = []
     graph = set()
 
-    for file in tables_folder.iterdir():
+    for file in table_files_folder.iterdir():
         tables.append(file.name.replace('.csv', ''))
         tables_metadata.append([file.name])
 
@@ -34,11 +39,25 @@ def create_table_metadata(tables_folder: Path):
     return tables_metadata
 
 def get_tables_graph(tables_headings: List[List[str]]) -> Set:
+    """ Returns a graph that represents the relation of the
+    tables bases on their headings --- tries to find foreign
+    keys relations.
+
+    Args: tables_headings: The headings of each table.
+
+    Return: The relationship graph and the specific link
+        of each table. Ex. "(0, 1) : (1, 0)" means that the
+        second col of the first table is the same as the
+        first col of the second table.
+    """
     graph = {}
     links_lookup = {}
+    # Func's compexity is abizmanlabysmal but the n size is relatively
+    # small so there is no real problem.
     for index, heading in enumerate(tables_headings):
         for w_index, word in enumerate(heading):
             for o_index, o_heading in enumerate(tables_headings):
+                # Don't create circular links.
                 if heading == o_heading:
                     break
 
@@ -60,4 +79,5 @@ def get_tables_graph(tables_headings: List[List[str]]) -> Set:
                         graph[o_index].append(index)
                 except ValueError:
                     continue
+
     return (graph, links_lookup)

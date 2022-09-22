@@ -2,11 +2,11 @@ import sqlite3
 from pathlib import Path
 from sqlite3 import Error
 from typing import Any, List, Optional, Union
+from constants import *
 
 
 
 sql_command = str
-data_folder = Path('.').parent / Path('data')
 
 create_customers_table = """
     CREATE TABLE IF NOT EXISTS CUSTOMERS(
@@ -45,7 +45,7 @@ class Database:
 
     @classmethod
     def connect(cls, db_file: Path) -> sqlite3.Connection:
-        """ Create a database connection to a SQLite database. """
+        """ Creates a database connection to an SQLite database. """
         conn = None
         try:
             conn = sqlite3.connect(db_file)
@@ -61,7 +61,7 @@ class Database:
         command: sql_command,
         parameters: Optional[Union[Any, List[Any]]] = None
     ):
-        """ Execute an SQL command.
+        """ Executes an SQL command.
 
         Args:
             conn: Connection object.
@@ -81,21 +81,34 @@ class Database:
 
     @classmethod
     def _create_tables(cls):
+        """ Creates default db tables. """
         for command in create_tables_commands:
             cls.execute(command)
 
     @classmethod
     def export_tables_to_csv(cls):
+        """ Exports table data to csv files. A csv file is created
+        for each table. Each csv has the following specifications:
+
+        - ASCII file (UNIX format).
+        - First line of the file is the heading.
+        - Each field are separated by comma character “,”.
+        - All Field are double quoted regardless of data type (e.g. “Olivier”).
+
+        Csvs are saved to the data folder.
+        """
         tables = ('CUSTOMERS', 'INVOICES', 'INVOICE_ITEMS')
         cursor = cls._conn.cursor()
 
         for table in tables:
-            cursor.execute(f'SELECT * FROM {table};')
-            with open(f'{data_folder}/new_{table}.csv', 'w+', encoding='ascii') as new_file:
+            cursor.execute(f'SELECT * FROM {table}')
+            with open(data_folder / f'{table}.csv', 'w+', encoding='ascii') as file:
 
-                columns = [f'"{i[0]}"' for i in cursor.description]
-                new_file.write(','.join(columns) + '\n')
+                # Format and write headings to the file
+                headings = [f'"{i[0]}"' for i in cursor.description]
+                file.write(','.join(headings) + '\n')
 
+                # Format data as to match the original data description
                 for entry in list(cursor):
                     entry = list(map(str, list(entry)))
 
@@ -107,6 +120,7 @@ class Database:
                     elif table == 'INVOICE_ITEMS':
                         entry[0] = 'INVO' + '0' * (8 - len(entry[0])) + entry[0]
 
+                    # Format and write entries to the file
                     for index, _ in enumerate(entry):
                         entry[index] = f'"{entry[index]}"'
-                    new_file.write(','.join(entry) + '\n')
+                    file.write(','.join(entry) + '\n')
