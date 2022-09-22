@@ -17,9 +17,10 @@ Each table metadata contain 3 values:
    denote the common columns. Ex. `(0, 1) : (1, 0)` means that
    the second col of the first table is the same as the first
    col of the second table.
-3. Dfs the graph and find a valid search order.
-4. Create the metadata based on the dfs result and the links
-   lookup table.
+3. Find a hamiltonian path of the graph and use it as a search
+   order.
+4. Create the metadata based on the found hamiltonian path and
+   the links lookup table.
 
 
 ## DATA EXTRACTION PROCESS

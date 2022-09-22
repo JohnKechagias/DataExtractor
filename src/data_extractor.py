@@ -2,7 +2,6 @@ import os
 from functools import partial
 import itertools
 from typing import List, Set
-from table_metadata import create_tables_metadata
 from multiprocessing.pool import ThreadPool
 from constants import *
 
@@ -11,7 +10,7 @@ from constants import *
 class DataExtractor:
     def __init__(
         self,
-        table_files_folder: Path,
+        tables_metadata: List[List],
         temp_folder: Path = None
     ) -> None:
         """Constructor.
@@ -25,7 +24,7 @@ class DataExtractor:
         if temp_folder is None:
             temp_folder = Path('.').parent
         self.temp_folder = temp_folder
-        self.tables_metadata = create_tables_metadata(table_files_folder)
+        self.tables_metadata = tables_metadata
 
     def extract(
         self,

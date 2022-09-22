@@ -1,14 +1,21 @@
 from pathlib import Path
 from typing import List, Set
-from dfs import dfs
+from hamiltonian_path import get_a_hamiltonian_path
 
 
 
-def create_tables_metadata(table_files_folder: Path):
-    """ Create metadata for the specified table files.
+def create_tables_metadata(table_files_folder: Path) -> List[List]:
+    """ Creates metadata for the specified table files.
 
     Args:
         table_files_folder: Path to the table files.
+
+    Returns:
+        A list of metadata for each table.
+
+    Raises:
+        ValueError: If a hamiltonian path couldn't be found
+            based on the provided table relationships.
     """
     tables = []
     tables_headings = []
@@ -24,8 +31,11 @@ def create_tables_metadata(table_files_folder: Path):
             tables_headings.append(heading.split(','))
 
     graph, links_lookup = get_tables_graph(tables_headings)
-    table_queue = dfs(graph)
-
+    table_queue = get_a_hamiltonian_path(graph)
+    # If we couldn't find a vaiable table_queue,
+    if not table_queue:
+        msg = 'Couldn\'t create valid metadata based on the table relationships.'
+        raise ValueError(msg)
     # First tables matchings column is the first.
     tables_metadata[0].append(0)
 
@@ -40,6 +50,7 @@ def create_tables_metadata(table_files_folder: Path):
     tables_metadata[-1].append(0)
 
     return tables_metadata
+
 
 def get_tables_graph(tables_headings: List[List[str]]) -> Set:
     """ Returns a graph that represents the relation of the

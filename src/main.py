@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 from database import Database
+from table_metadata import create_tables_metadata
 from data_extractor import DataExtractor
 from constants import *
 
@@ -25,9 +26,10 @@ from constants import *
 #    denote the common columns. Ex. `(0, 1) : (1, 0)` means that
 #    the second col of the first table is the same as the first
 #    col of the second table.
-# 3. Dfs the graph and find a valid search order.
-# 4. Create the metadata based on the dfs result and the links
-#    lookup table.
+# 3. Find a hamiltonian path of the graph and use it as a search
+#    order.
+# 4. Create the metadata based on the found hamiltonian path and
+#    the links lookup table.
 #
 #
 # DATA EXTRACTION PROCESS
@@ -68,5 +70,11 @@ if __name__ == '__main__':
     filepath = Path(sys.argv[1])
     # Database.connect('database.db')
 
-    data_extractor = DataExtractor(data_folder)
+    try:
+        tables_metadata = create_tables_metadata(data_folder)
+    except ValueError:
+        print('Invalid data table relationships.\
+Couldn\'t connect all tables with the existing foreign keys.')
+
+    data_extractor = DataExtractor(tables_metadata)
     data_extractor.extract(filepath)
