@@ -5,6 +5,8 @@ Python Version: 3.10.7 || OS: Windows
 ## Usage
 Just run the `main.py` file and pass it the input file.
 
+The 3 smallers files are outputted to the `output` folder.
+
 ```shell
 python .\src\main.py .\input\USERS.csv
 ```
