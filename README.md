@@ -5,10 +5,11 @@ Python Version: 3.10.7 || OS: Windows
 ## Usage
 Just run the `main.py` file and pass it the input file.
 
+The 3 smallers files are outputted to the `output` folder.
+
 ```shell
 python .\src\main.py .\input\USERS.csv
 ```
-The 3 smallers files are outputted to the `output` folder.
 
 ## Test data
 Test data were generated with the use of Datanamic's data generator and were formated to the exercise's specifications. The test data include approximately
