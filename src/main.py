@@ -42,7 +42,7 @@ from constants import *
 #    to extract. For each table we select a column and for
 #    each row we select the field of the column and we
 #    determine if the field's value is included in the lookup
-#    table. If thats the case, we include the row to the
+#    table. If that's the case, we include the row to the
 #    extracted data.
 # 5. For each table file:
 #       Default initialize line_list.

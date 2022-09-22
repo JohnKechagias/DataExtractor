@@ -63,7 +63,7 @@ class DataExtractor:
                 table_metadata[2]
             )
             # Create threads that search a smaller file, and based on the
-            # findings 1. create a new lookup table thats gonna be used for
+            # findings 1. create a new lookup table that's gonna be used for
             # the next table data matching and 2. add the matched row to the
             # line_list so the can be written to a new file.
             split_lookup_table = pool.map_async(func, filelist)
