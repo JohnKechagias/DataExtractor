@@ -26,6 +26,7 @@ def create_tables_metadata(table_files_folder: Path):
     graph, links_lookup = get_tables_graph(tables_headings)
     table_queue = dfs(graph)
 
+    # First tables matchings column is the first.
     tables_metadata[0].append(0)
 
     for index in range(len(table_queue) - 1):
@@ -34,6 +35,8 @@ def create_tables_metadata(table_files_folder: Path):
         tables_metadata[index].append(cols[0])
         tables_metadata[index + 1].append(cols[1])
 
+    # We don't need to create a lookup table from the
+    # last table.
     tables_metadata[-1].append(0)
 
     return tables_metadata
