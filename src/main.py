@@ -17,6 +17,19 @@ from constants import *
 #    used to create the next lookup table.
 #
 #
+# HOW ARE THE METADATA GENERATED
+# 1. Create a relationship graph based on the foreign keys that
+#    link the tables.
+# 2. Cross check the table's headings and create a lookup table
+#    for each link. We link each link with a pair of values that
+#    denote the common columns. Ex. `(0, 1) : (1, 0)` means that
+#    the second col of the first table is the same as the first
+#    col of the second table.
+# 3. Dfs the graph and find a valid search order.
+# 4. Create the metadata based on the dfs result and the links
+#    lookup table.
+#
+#
 # DATA EXTRACTION PROCESS
 # The data extraction process has 6 distinct steps:
 # 1. Determine the order in which we are going to search
